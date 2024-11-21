@@ -1,6 +1,6 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
-		store: {
+		store: { 
 			message: null,
 			demo: [
 				{
@@ -46,9 +46,37 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				//reset the global store
 				setStore({ demo: demo });
+			},
+			signupUser: async (email,password)=>{
+				let body = {
+					"email": email,
+					"password": password
+				}
+				try {
+					const resp = await fetch(process.env.BACKEND_URL + "/signup", {
+						method: 'POST',
+						body: JSON.stringify(body),
+						headers: {
+						'Content-Type': 'application/json',
+						'Access-Control-Allow-Origin': '*' /* por un error en consola */
+						}
+					})
+					
+					const data = await resp.json();
+					if (!resp.ok) {
+						throw new Error("error de network");
+					}
+					return data;
+				}
+				
+				catch(error) {
+					console.log("error en sign up", error)
+					throw error;
+				}
+				}
 			}
 		}
 	};
-};
+
 
 export default getState;
